@@ -15,6 +15,7 @@ html {
 }
 .App .title-row {
   display: flex;
+  flex-direction: column;
   width: 70rem;
   justify-content: space-between;
   padding: 1rem;
@@ -22,6 +23,13 @@ html {
   background: #fff;
   align-items: center;
 }
+
+/* .App .items {
+  display: flex;
+} */
+/* .App .title-row li{
+  list-style: none;
+} */
 .App .title-row .title {
   color: #4c4c4c;
   font-size: 4rem;
