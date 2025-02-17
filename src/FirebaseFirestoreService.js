@@ -1,7 +1,7 @@
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-import firebase from "./FirebaseConfig";
+import app from "./FirebaseConfig";
 
-const firestore = getFirestore(firebase);
+const firestore = getFirestore(app);
 
 const createDocument = (collectionName, documentData) => {
   return addDoc(collection(firestore, collectionName), documentData);

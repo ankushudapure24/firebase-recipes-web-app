@@ -8,9 +8,9 @@ import "./App.css";
 import FirebaseFirestoreService from "./FirebaseFirestoreService";
 
 function App() {
-  const [user, setUsser] = useState(null);
+  const [user, setUser] = useState(null);
 
-  FirebaseAuthService.subscribeToAuthChanges(setUsser);
+  FirebaseAuthService.subscribeToAuthChanges(setUser);
 
   async function handleAddRecipe(newRecipe) {
     try {
@@ -35,7 +35,11 @@ function App() {
           <LoginForm existingUser={user}></LoginForm>
         </div>
         <div className="main">
-          <AddEditRecipesForm handleAddRecipe={handleAddRecipe}/>
+          {
+            user ? (
+              <AddEditRecipesForm handleAddRecipe={handleAddRecipe} />
+            ) : null
+          }
         </div>
       </div>
     </>

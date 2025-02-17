@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AddEditRecipesForm({ handleAddRecipes }) {
+function AddEditRecipesForm({ handleAddRecipe }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [publishDate, setPublishDate] = useState(
@@ -29,7 +29,7 @@ function AddEditRecipesForm({ handleAddRecipes }) {
         ingredients,
       };
 
-      handleAddRecipes(newRecipe);
+      handleAddRecipe(newRecipe);
     }
 
     function handleAddIngredient(e) {
