@@ -18,14 +18,14 @@ function AddEditRecipesForm({ handleAddRecipe }) {
         return;
       }
 
-      const isPublished = new Date(publishDate) <= new Date() ? true : false;
+      // const isPublished = new Date(publishDate) <= new Date() ? true : false;
 
       const newRecipe = {
         name,
         category,
         directions,
         publishDate: new Date(publishDate),
-        isPublished,
+        // isPublished,
         ingredients,
       };
 
