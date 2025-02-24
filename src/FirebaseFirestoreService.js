@@ -1,4 +1,4 @@
-import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import app from "./FirebaseConfig";
 
 const firestore = getFirestore(app);
@@ -17,11 +17,28 @@ const readDocuments = (collectionName) => {
   );
 }; 
 
+const updateDocument = (collection, id, document) => {
+  const docRef = doc(firestore, collection, id);
+  return updateDoc(docRef, document);
+};
+
+const deleteDocument = (collection, id) => {
+  const docRef = doc(firestore, collection, id);
+  return deleteDoc(docRef);
+};
+
+
+// const updateDocument = (collection, id, document) => {
+//   return firestore.collection(collection).doc(id).update(document);
+// }
+
 
 
 const FirebaseFirestoreService = {
   createDocument, 
-  readDocuments
+  readDocuments,
+  updateDocument,
+  deleteDocument
 };
 
 export default FirebaseFirestoreService;

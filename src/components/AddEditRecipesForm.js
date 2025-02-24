@@ -1,6 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function AddEditRecipesForm({ handleAddRecipe }) {
+function AddEditRecipesForm({
+  existingRecipe,
+  handleAddRecipe,
+  handleUpdateRecipe,
+  handleEditRecipeCancel,
+  handleDeleteRecipe,
+}) {
+  useEffect(() => {
+    if(existingRecipe) {
+      setName(existingRecipe.name);
+      setCategory(existingRecipe.category);
+      setDirections(existingRecipe.directions);
+      // setPublishDate(existingRecipe.publishDate.toISOString().split("T")[0]);
+      setIngredients(existingRecipe.ingredients);
+    } else {
+      resetForm();
+    }
+  }, [existingRecipe]);
+
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [publishDate, setPublishDate] = useState(
@@ -10,51 +28,63 @@ function AddEditRecipesForm({ handleAddRecipe }) {
   const [ingredients, setIngredients] = useState([]);
   const [ingredientName, setIngredientName] = useState("");
 
-    function handleRecipeFormSubmit(e) {
-      e.preventDefault();
+  function handleRecipeFormSubmit(e) {
+    e.preventDefault();
 
-      if (ingredients.length === 0) {
-        alert("Missing Ingredients field, please double check.");
-        return;
-      }
+    if (ingredients.length === 0) {
+      alert("Missing Ingredients field, please double check.");
+      return;
+    }
 
-      // const isPublished = new Date(publishDate) <= new Date() ? true : false;
+    // const isPublished = new Date(publishDate) <= new Date() ? true : false;
 
-      const newRecipe = {
-        name,
-        category,
-        directions,
-        publishDate: new Date(publishDate),
-        // isPublished,
-        ingredients,
-      };
+    const newRecipe = {
+      name,
+      category,
+      directions,
+      publishDate: new Date(publishDate),
+      // isPublished,
+      ingredients,
+    };
 
+    if(existingRecipe) {
+      handleUpdateRecipe(newRecipe, existingRecipe.id);
+    } else {
       handleAddRecipe(newRecipe);
     }
 
-    function handleAddIngredient(e) {
-        if(e.key && e.key !== "Enter") {
-            return;
-        }
+    resetForm();
+  }
 
-        e.preventDefault();
-
-        if(!ingredientName) {
-            alert("Missing Ingredient field, please double check.");
-            return;
-        }
-
-        setIngredients([...ingredients, ingredientName]);
-        setIngredientName("");
+  function handleAddIngredient(e) {
+    if (e.key && e.key !== "Enter") {
+      return;
     }
 
+    e.preventDefault();
 
+    if (!ingredientName) {
+      alert("Missing Ingredient field, please double check.");
+      return;
+    }
+
+    setIngredients([...ingredients, ingredientName]);
+    setIngredientName("");
+  }
+
+  function resetForm() {
+    setName("");
+    setCategory("");
+    setDirections("");
+    setPublishDate("");
+    setIngredients([]);
+  }
   return (
     <form
       onSubmit={handleRecipeFormSubmit}
       className="add-edit-recipe-form-container"
     >
-      <h2>Add a new recipe</h2>
+      {existingRecipe ? <h2>Update the recipe</h2> : <h2>Add new Reecipe</h2>}
       <div className="top-form-section">
         <div className="fields">
           <label className="recipe-label input-label">
@@ -164,12 +194,27 @@ function AddEditRecipesForm({ handleAddRecipe }) {
         </div>
       </div>
       <div className="action-buttons">
-        <button
-          type="submit"
-          className="primary-button action-button"
-        >
-          Create Recipe
+        <button type="submit" className="primary-button action-button">
+          {existingRecipe ? "Update Recipe" : "Create Recipe"}
         </button>
+        {existingRecipe ? (
+          <>
+            <button
+              type="button"
+              onClick={handleEditRecipeCancel}
+              className="primary-button action-button"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDeleteRecipe(existingRecipe.id)}
+              className="primary-button action-button"
+            >
+              Delete Recipe
+            </button>
+          </>
+        ) : null}
       </div>
     </form>
   );

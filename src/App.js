@@ -7,6 +7,7 @@ import "./App.css";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [currentRecipe, setCurrentRecipe] = useState(null);
   const [recipes, setRecipes] = useState([]);
 
  
@@ -36,6 +37,11 @@ function App() {
     }
   };
 
+  //additional changes                                    
+  // function handleFetchRecipes() {
+  //   return fetchRecipes;
+  // }
+
 
    
   const handleAddRecipe = async (newRecipe) => {
@@ -50,6 +56,62 @@ function App() {
       console.error("Error adding recipe:", error.message);
     }
   };
+
+  async function handleUpdateRecipe(newRecipe, recipeId) {
+    try {
+      await FirebaseFirestoreService.updateDocument(
+        "recipes",
+        recipeId,
+        newRecipe
+      );
+
+      fetchRecipes(); // Refresh recipes after adding
+
+      alert(`Succesfully updated recipe with ID = ${recipeId}`);
+      setCurrentRecipe(null);
+    } catch (error) {
+      alert(error.message);
+      throw error;
+    }
+  }
+
+  function handleEditRecipeClick(recipeId) {
+    const selectedRecipe = recipes.find((recipe) => {
+      return recipe.id === recipeId;
+    });
+
+    if(selectedRecipe) {
+      setCurrentRecipe(selectedRecipe);
+      window.scrollTo(0, document.body.scrollHeight);     
+    }
+  }
+
+  function handleEditRecipeCancel() {
+    setCurrentRecipe(null);
+  }
+
+  async function handleDeleteRecipe(recipeId) {
+    const deleteConfirmation = window.confirm(
+      "Are you sure you want to delete ?"
+    );
+    
+    if(deleteConfirmation) {
+      try {
+        await FirebaseFirestoreService.deleteDocument("recipes", recipeId);
+
+        fetchRecipes(); // Refresh recipes after delete
+
+        setCurrentRecipe(null);
+
+        window.scrollTo(0, 0);
+
+        alert(`Succesfully deleted recipe with ID = ${recipeId}`);
+      } catch (error) {
+        alert(error.message);
+        throw error;
+      }
+    }
+  }
 
   return (
     <div className="App">
@@ -74,6 +136,13 @@ function App() {
                         ? recipe.publishDate.toString()
                         : "N/A"}
                     </div>
+                    {user ? (
+                      <button
+                        type="button"
+                        onClick={() => handleEditRecipeClick(recipe.id)}
+                        className="primary-button edit-button"
+                      >EDIT</button>
+                    ) : null}
                   </div>
                 ))}
               </div>
@@ -82,7 +151,15 @@ function App() {
             )}
           </div>
         </div>
-        {user && <AddEditRecipesForm handleAddRecipe={handleAddRecipe} />}
+        {user && (
+          <AddEditRecipesForm
+            existingRecipe={currentRecipe}
+            handleAddRecipe={handleAddRecipe}
+            handleUpdateRecipe={handleUpdateRecipe}
+            handleEditRecipeCancel={handleEditRecipeCancel}
+            handleDeleteRecipe={handleDeleteRecipe}
+          />
+        )}
       </div>
     </div>
   );
