@@ -16,7 +16,6 @@ const readDocuments = (collectionName) => {
     }))
   );
 }; 
-
 const updateDocument = (collection, id, document) => {
   const docRef = doc(firestore, collection, id);
   return updateDoc(docRef, document);

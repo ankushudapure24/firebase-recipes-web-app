@@ -9,6 +9,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [currentRecipe, setCurrentRecipe] = useState(null);
   const [recipes, setRecipes] = useState([]);
+  const [categoryFilter, setCategoryFilter] = useState("");
 
  
   useEffect(() => {
@@ -20,7 +21,7 @@ function App() {
     if (user) {
       fetchRecipes();
     }
-  }, [user]);
+  }, [user, categoryFilter]);
 
   
   const fetchRecipes = async () => {
@@ -133,7 +134,9 @@ function App() {
                     <div className="recipe-field">
                       Publish Date:{" "}
                       {recipe.publishDate
-                        ? recipe.publishDate.toString()
+                        ? new Date(
+                            recipe.publishDate.seconds * 1000
+                          ).toLocaleDateString("en-US")
                         : "N/A"}
                     </div>
                     {user ? (
@@ -141,7 +144,9 @@ function App() {
                         type="button"
                         onClick={() => handleEditRecipeClick(recipe.id)}
                         className="primary-button edit-button"
-                      >EDIT</button>
+                      >
+                        EDIT
+                      </button>
                     ) : null}
                   </div>
                 ))}
